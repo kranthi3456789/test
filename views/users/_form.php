@@ -13,8 +13,10 @@ Modal::begin ( [
 		'toggleButton' => [ 
 				'label' => 'New user',
 				'class' => 'btn btn-success',
+				'data-target'=>'#modalForm'
 		],
-		'size' => 'model-md' 
+		'size' => 'model-md',
+		
 ] );
 
 ?>
@@ -23,11 +25,12 @@ Modal::begin ( [
 <div class="users-form">
     <?php
 	$form = ActiveForm::begin ( [ 
+			'options' => ['enctype' => 'multipart/form-data'],
 			'id' => 'user-form',
-			'options' => [ 
-					'class' => 'form-vertical' 
-			] 
-	] );
+			'action' => Yii::$app->urlManager->createUrl(['users/create']),
+			'class' => 'form-vertical' 
+			]
+	);
 	?>
     <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
@@ -48,12 +51,12 @@ Modal::begin ( [
 </div>
 
 <?php $js = '
-var $form = $(this);
-$(\'#user-form\').on(\'beforeSubmit\', function() {
+jQuery(\'#user-form\').on(\'beforeSubmit\', function(){
+	var form = jQuery(this);
     $.ajax({
-        url: "create",
+        url: "http://localhost/basic/web/users/create",
         type: \'POST\',
-        data: $form.serialize(),
+        data: form.serialize(),
         success: function (data) {
             $(\'#modalForm\').modal(\'hide\');
         },
